@@ -262,3 +262,26 @@ it('should add nft to market and return true', () => {
         expect(nonSpec.get_market_price(tokenId)).toBe(price)
     })
 })      
+
+describe('remove_from_market', () => {
+
+  it('should remove nft from market and return true', () => { 
+    VMContext.setPredecessor_account_id(alice)  // set alice as the caller  of the function to remove the token from the market           
+    const tokenId = nonSpec.mint_to(alice)  // mint new token that return its id  
+    const price = u128.from('1000000000000000000000000')  // set price to be 1 NEAR
+    nonSpec.add_to_market(tokenId, price)  // add token to the market     
+    expect(nonSpec.remove_from_market(tokenId)).toBe(true)  // remove token from the market
+  }   // remove token from the market
+  )
+
+  it('should throw if we attempt to remove a token that is not owned by the caller', () => {
+    expect(() => {
+      VMContext.setPredecessor_account_id(bob)
+      const tokenId = nonSpec.mint_to(alice)
+      const price = u128.from('1000000000000000000000000')
+      nonSpec.add_to_market(tokenId, price)
+      nonSpec.remove_from_market(tokenId) // bob does not own the token he is trying to remove from the market so he cannot remove it
+    }).toThrow(nonSpec.ERROR_TOKEN_NOT_OWNED_BY_CALLER) // bob does not own the token he is trying to remove from the market so he cannot remove it
+  }
+  )
+})

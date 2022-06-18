@@ -42,7 +42,7 @@ export const ERROR_CALLER_ID_DOES_NOT_MATCH_EXPECTATION = 'Caller ID does not ma
 export const ERROR_MAXIMUM_TOKEN_LIMIT_REACHED = 'Maximum token limit reached'
 export const ERROR_OWNER_ID_DOES_NOT_MATCH_EXPECTATION = 'Owner id does not match real token owner id'
 export const ERROR_TOKEN_NOT_OWNED_BY_CALLER = 'Token is not owned by the caller. Please use transfer_from for this scenario'
-
+export const ERROR_TOKEN_NOT_IN_MARKET = 'Token is not in the market'
 /******************/
 /* CHANGE METHODS */
 /******************/
@@ -163,3 +163,22 @@ function internal_add_to_market(token_id: TokenId, price: Price): void {
   market.set(token_id, price)
 }
 
+export function remove_from_market(token_id: TokenId): boolean {
+  const caller = context.predecessor
+  const owner = tokenToOwner.getSome(token_id)
+  const escrow = escrowAccess.get(owner)
+
+  assert(
+    [owner, escrow].includes(caller), 
+    ERROR_CALLER_ID_DOES_NOT_MATCH_EXPECTATION
+    )
+
+  assert(market.getSome(token_id), ERROR_TOKEN_NOT_IN_MARKET) 
+
+  internal_remove_from_market(token_id)
+  return true
+} // remove_from_market 
+
+function internal_remove_from_market(token_id: TokenId): void {
+  market.delete(token_id)
+}
