@@ -1,4 +1,10 @@
-import { PersistentMap, storage, context } from 'near-sdk-as'
+import {
+  PersistentMap,
+  storage,
+  context,
+  u128,
+  PersistentUnorderedMap,
+} from 'near-sdk-as'
 
 /**************************/
 /* DATA TYPES AND STORAGE */
