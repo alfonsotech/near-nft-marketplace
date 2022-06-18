@@ -1,4 +1,4 @@
-import { VMContext } from 'near-sdk-as'
+import { u128, VMContext } from 'near-sdk-as'
 
 // explicitly import functions required by spec
 import {
@@ -230,3 +230,24 @@ describe('nonSpec interface', () => {
     }).toThrow(nonSpec.ERROR_MAXIMUM_TOKEN_LIMIT_REACHED)
   })
 })
+
+describe('add_to_market', () => {
+
+it('should add nft to market and return true', () => {
+  VMContext.setPredecessor_account_id(alice)
+  const tokenId = nonSpec.mint_to(alice)
+  const price = u128.from('1000000000000000000000000')
+  expect(nonSpec.add_to_market(tokenId, price)).toBe(true)
+})
+
+  it('should throw if we attempt to add a token that is not owned by the caller', () => {
+    expect(() => {
+      VMContext.setPredecessor_account_id(bob)
+      const tokenId = nonSpec.mint_to(alice)
+      const price = u128.from('1000000000000000000000000')
+      nonSpec.add_to_market(tokenId, price)
+    }).toThrow(nonSpec.ERROR_TOKEN_NOT_OWNED_BY_CALLER) // bob does not own the token he is trying to add to the market so he cannot add it           
+    })  // bob does not own the token he is trying to add to the market so he cannot add it           
+  }   
+)
+  
