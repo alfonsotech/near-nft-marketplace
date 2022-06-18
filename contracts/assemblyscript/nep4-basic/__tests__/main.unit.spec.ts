@@ -274,6 +274,16 @@ describe('remove_from_market', () => {
   }   // remove token from the market
   )
 
+  it('should throw error for nft available in market', () => {
+    expect(() => {
+        VMContext.setPredecessor_account_id(alice)
+        // mint new token that return its id
+        const tokenId = nonSpec.mint_to(alice)
+        // throw error when try to remove token id that was not listed
+        nonSpec.remove_from_market(tokenId)
+    }).toThrow(nonSpec.ERROR_TOKEN_NOT_IN_MARKET)
+  })
+
   it('should throw if we attempt to remove a token that is not owned by the caller', () => {
     expect(() => {
       VMContext.setPredecessor_account_id(bob)
