@@ -248,6 +248,17 @@ it('should add nft to market and return true', () => {
       nonSpec.add_to_market(tokenId, price)
     }).toThrow(nonSpec.ERROR_TOKEN_NOT_OWNED_BY_CALLER) // bob does not own the token he is trying to add to the market so he cannot add it           
     })  // bob does not own the token he is trying to add to the market so he cannot add it           
-  }   
-)
-  
+  })
+
+  describe('get_market_price', () => {
+    it('return market price for a token', () => {
+        VMContext.setPredecessor_account_id(alice)
+        // mint new token that return its id
+        const tokenId = nonSpec.mint_to(alice)
+        // set price to be 1 NEAR
+        const price = u128.from('1000000000000000000000000')
+        nonSpec.add_to_market(tokenId, price)
+        // get the market price of tokenId
+        expect(nonSpec.get_market_price(tokenId)).toBe(price)
+    })
+})      

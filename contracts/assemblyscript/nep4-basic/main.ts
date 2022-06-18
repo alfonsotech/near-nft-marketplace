@@ -155,6 +155,11 @@ export function add_to_market(token_id: TokenId, price: Price): boolean {
   return true
 }
 
+export function get_market_price(token_id: TokenId): Price {
+  return market.getSome(token_id)
+}
+
 function internal_add_to_market(token_id: TokenId, price: Price): void {
   market.set(token_id, price)
 }
+
